@@ -7,8 +7,8 @@ class Mushroom {
         this.height = height;
         this.speed = speed;
         
-        // 4種蘑菇類型（隨機選擇）
-        const types = ['red', 'brown', 'purple', 'yellow'];
+        // 7種蘑菇類型（隨機選擇）
+        const types = ['red', 'brown', 'purple', 'yellow', 'blue', 'green', 'orange'];
         this.type = types[Math.floor(Math.random() * types.length)];
         
         // 動畫屬性
@@ -18,7 +18,7 @@ class Mushroom {
         // 計分標記
         this.scored = false;
         
-        // 圖片載入 - 根據類型選擇不同蘑菇圖片
+        // 圖片載入
         this.image = new Image();
         this.imageLoaded = false;
         this.image.onload = () => {
@@ -28,24 +28,11 @@ class Mushroom {
             console.warn(`蘑菇圖片載入失敗: ${this.type}`);
         };
         
-        // 根據蘑菇類型選擇圖片
-        switch(this.type) {
-            case 'red':
-                this.image.src = 'assets/images/mushroom1.png';
-                break;
-            case 'brown':
-                this.image.src = 'assets/images/mushroom2.png';
-                break;
-            case 'purple':
-                this.image.src = 'assets/images/mushroom3.png';
-                break;
-            case 'yellow':
-                this.image.src = 'assets/images/mushroom1.png'; // 使用mushroom1作為黃色
-                break;
-        }
-        
         // 根據類型設定特殊屬性
         this.setTypeProperties();
+        
+        // 根據類型選擇圖片
+        this.setMushroomImage();
     }
     
     // 設定不同類型的特殊屬性
@@ -66,6 +53,45 @@ class Mushroom {
             case 'yellow':
                 this.points = 5;
                 this.dangerLevel = 'extreme';
+                break;
+            case 'blue':
+                this.points = 2;
+                this.dangerLevel = 'medium';
+                break;
+            case 'green':
+                this.points = 3;
+                this.dangerLevel = 'high';
+                break;
+            case 'orange':
+                this.points = 4;
+                this.dangerLevel = 'high';
+                break;
+        }
+    }
+    
+    // 設定蘑菇圖片
+    setMushroomImage() {
+        switch(this.type) {
+            case 'red':
+                this.image.src = 'assets/images/mushroom1.png';
+                break;
+            case 'brown':
+                this.image.src = 'assets/images/mushroom2.png';
+                break;
+            case 'purple':
+                this.image.src = 'assets/images/mushroom3.png';
+                break;
+            case 'yellow':
+                this.image.src = 'assets/images/mushroom4.png';
+                break;
+            case 'blue':
+                this.image.src = 'assets/images/mushroom5.png';
+                break;
+            case 'green':
+                this.image.src = 'assets/images/mushroom6.png';
+                break;
+            case 'orange':
+                this.image.src = 'assets/images/mushroom1.png'; // 使用mushroom1作為橙色
                 break;
         }
     }
@@ -122,6 +148,11 @@ class Mushroom {
     // 檢查是否離開螢幕
     isOffScreen() {
         return this.x + this.width < 0;
+    }
+    
+    // 檢查是否通過刺蝟位置
+    hasPassedHedgehog(hedgehogX) {
+        return this.x + this.width < hedgehogX;
     }
 
     // 獲取碰撞邊界

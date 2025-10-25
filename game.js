@@ -100,7 +100,10 @@ class Game {
             'assets/images/character.png',
             'assets/images/mushroom1.png',
             'assets/images/mushroom2.png',
-            'assets/images/mushroom3.png'
+            'assets/images/mushroom3.png',
+            'assets/images/mushroom4.png',
+            'assets/images/mushroom5.png',
+            'assets/images/mushroom6.png'
         ];
         
         let loadedCount = 0;
@@ -186,85 +189,35 @@ class Game {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
-                if (this.gameState === 'waiting') {
-                    this.start();
-                } else if (this.gameState === 'playing') {
-                    this.handleJumpStart();
-                } else if (this.gameState === 'gameOver') {
-                    this.start();
-                }
-            }
-        });
-        
-        document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space' && this.gameState === 'playing') {
-                e.preventDefault();
-                this.handleJumpEnd();
+                this.handleJump();
             }
         });
 
         // 觸控事件
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (this.gameState === 'waiting') {
-                this.start();
-            } else if (this.gameState === 'playing') {
-                this.handleJumpStart();
-            } else if (this.gameState === 'gameOver') {
-                this.start();
-            }
-        });
-        
-        this.canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            if (this.gameState === 'playing') {
-                this.handleJumpEnd();
-            }
+            this.handleJump();
         });
 
         // 滑鼠事件
         this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
-            if (this.gameState === 'waiting') {
-                this.start();
-            } else if (this.gameState === 'playing') {
-                this.handleJumpStart();
-            } else if (this.gameState === 'gameOver') {
-                this.start();
-            }
-        });
-        
-        this.canvas.addEventListener('mouseup', (e) => {
-            e.preventDefault();
-            if (this.gameState === 'playing') {
-                this.handleJumpEnd();
-            }
-        });
-        
-        this.canvas.addEventListener('mouseleave', (e) => {
-            if (this.gameState === 'playing') {
-                this.handleJumpEnd();
-            }
+            this.handleJump();
         });
 
         // 重新開始按鈕
         this.restartBtn.addEventListener('click', () => this.start());
     }
 
-    // 處理跳躍開始
-    handleJumpStart() {
+    // 處理跳躍
+    handleJump() {
         if (this.gameState === 'playing') {
-            this.hedgehog.startJump();
+            this.hedgehog.jump();
+            this.playSound('jump');
         } else if (this.gameState === 'waiting') {
             this.start();
-        }
-    }
-    
-    // 處理跳躍結束
-    handleJumpEnd() {
-        if (this.gameState === 'playing') {
-            this.hedgehog.endJump();
-            this.playSound('jump');
+        } else if (this.gameState === 'gameOver') {
+            this.start();
         }
     }
     
