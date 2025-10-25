@@ -316,12 +316,7 @@ class Game {
             }
         }
         
-        // 移除離開螢幕的蘑菇
-        for (let i = mushrooms.length - 1; i >= 0; i--) {
-            if (mushrooms[i].isOffScreen()) {
-                mushrooms.splice(i, 1);
-            }
-        }
+        // 蘑菇的更新和移除已經在 mushroomManager.update() 中處理
         
         // 根據時間增加難度 - 每 50 分增加一次
         if (this.score > 0 && this.score % 50 === 0) {

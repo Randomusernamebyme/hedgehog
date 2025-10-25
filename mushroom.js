@@ -98,6 +98,11 @@ class Mushroom {
 
     // 更新位置
     update(deltaTime) {
+        // 確保 deltaTime 是有效的數值
+        if (!deltaTime || deltaTime <= 0) {
+            deltaTime = 16.67; // 預設 60fps
+        }
+        
         // 使用 deltaTime 確保移動速度一致
         this.x -= this.speed * (deltaTime / 16.67); // 16.67ms = 60fps
         
