@@ -7,37 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
+    <div class="game-wrapper">
+        <div class="game-container">
             <div class="score-display">
-                <span>分數: <span id="score">0</span></span>
-                <span>最高分: <span id="high-score">0</span></span>
+                <span id="high-score">HI 00000</span>
+                <span id="score">00000</span>
             </div>
-            <div class="controls">
-                <button id="mute-btn" class="control-btn">🔊</button>
+            
+            <canvas id="gameCanvas"></canvas>
+            
+            <div id="game-over" class="game-over" style="display: none;">
+                <div class="game-over-content">
+                    <div class="game-over-text">GAME OVER</div>
+                    <div class="restart-button" id="restart-btn">⟳</div>
+                </div>
             </div>
-        </div>
-        
-        <div id="loading" style="text-align: center; padding: 20px; color: #666;">
-            <div style="margin-bottom: 10px;">正在載入遊戲...</div>
-            <div id="loading-progress" style="font-size: 14px; color: #999;">載入圖片中...</div>
-        </div>
-        
-        <canvas id="gameCanvas" style="display: none;"></canvas>
-        
-        <div class="game-controls">
-            <button id="start-btn" class="game-btn">開始遊戲</button>
-            <button id="restart-btn" class="game-btn" style="display: none;">重新開始</button>
         </div>
         
         <div class="instructions">
-            <p>按空白鍵或點擊螢幕讓刺蝟跳躍避開蘑菇！</p>
-        </div>
-        
-        <div id="game-over" class="game-over" style="display: none;">
-            <h2>遊戲結束！</h2>
-            <p>你的分數: <span id="final-score">0</span></p>
-            <p>最高分: <span id="final-high-score">0</span></p>
+            Press space to play
         </div>
     </div>
 

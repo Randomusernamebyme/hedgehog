@@ -11,6 +11,7 @@ class Game {
         this.gameState = 'waiting'; // waiting, playing, gameOver
         this.score = 0;
         this.highScore = 0;
+        this.gameStartTime = 0;
         this.isMuted = false;
         
         // 遊戲物件
@@ -30,15 +31,11 @@ class Game {
         // UI 元素
         this.scoreElement = document.getElementById('score');
         this.highScoreElement = document.getElementById('high-score');
-        this.startBtn = document.getElementById('start-btn');
         this.restartBtn = document.getElementById('restart-btn');
-        this.muteBtn = document.getElementById('mute-btn');
         this.gameOverElement = document.getElementById('game-over');
-        this.finalScoreElement = document.getElementById('final-score');
-        this.finalHighScoreElement = document.getElementById('final-high-score');
         
         // 檢查必要的 UI 元素
-        if (!this.scoreElement || !this.highScoreElement || !this.startBtn) {
+        if (!this.scoreElement || !this.highScoreElement) {
             console.warn('某些 UI 元素未找到，但遊戲仍可運行');
         }
         
@@ -63,15 +60,15 @@ class Game {
         this.preloadImages();
         
         // 初始化遊戲物件
-        const groundY = window.innerHeight - 50;
-        this.hedgehog = new Hedgehog(100, groundY - 40, 40, 40);
+        const groundY = 120; // 固定地面位置
+        this.hedgehog = new Hedgehog(50, groundY - 30, 30, 30);
         this.mushroomManager = new MushroomManager();
         this.collisionDetector = new CollisionDetector();
         this.storage = new GameStorage();
         
         // 載入最高分
         this.highScore = this.storage.getHighScore();
-        this.highScoreElement.textContent = this.highScore;
+        this.highScoreElement.textContent = `HI ${this.highScore.toString().padStart(5, '0')}`;
         
         // 載入靜音狀態
         this.isMuted = this.storage.getMuteState();
@@ -89,21 +86,13 @@ class Game {
         console.log('遊戲初始化完成，等待圖片載入...');
     }
     
-    // 設置全螢幕 Canvas
+    // 設置 Canvas
     setupFullscreenCanvas() {
-        const resizeCanvas = () => {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
-            this.canvas.style.width = '100vw';
-            this.canvas.style.height = '100vh';
-            this.canvas.style.position = 'fixed';
-            this.canvas.style.top = '0';
-            this.canvas.style.left = '0';
-            this.canvas.style.zIndex = '1';
-        };
-        
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        // 設置固定尺寸，像 Chrome 恐龍
+        this.canvas.width = 600;
+        this.canvas.height = 150;
+        this.canvas.style.width = '600px';
+        this.canvas.style.height = '150px';
     }
 
     // 預載入所有圖片
@@ -214,52 +203,73 @@ class Game {
 
     // 設置事件監聽器
     setupEventListeners() {
-        // 鍵盤事件 - 按壓控制
+        // 鍵盤事件 - 空格鍵開始/跳躍
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && !e.repeat) {
+            if (e.code === 'Space') {
                 e.preventDefault();
-                this.handleJumpStart();
+                if (this.gameState === 'waiting') {
+                    this.start();
+                } else if (this.gameState === 'playing') {
+                    this.handleJumpStart();
+                } else if (this.gameState === 'gameOver') {
+                    this.start();
+                }
             }
         });
         
         document.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') {
+            if (e.code === 'Space' && this.gameState === 'playing') {
                 e.preventDefault();
                 this.handleJumpEnd();
             }
         });
 
-        // 觸控事件 - 按壓控制
+        // 觸控事件
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            this.handleJumpStart();
+            if (this.gameState === 'waiting') {
+                this.start();
+            } else if (this.gameState === 'playing') {
+                this.handleJumpStart();
+            } else if (this.gameState === 'gameOver') {
+                this.start();
+            }
         });
         
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
-            this.handleJumpEnd();
+            if (this.gameState === 'playing') {
+                this.handleJumpEnd();
+            }
         });
 
-        // 滑鼠事件 - 按壓控制
+        // 滑鼠事件
         this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
-            this.handleJumpStart();
+            if (this.gameState === 'waiting') {
+                this.start();
+            } else if (this.gameState === 'playing') {
+                this.handleJumpStart();
+            } else if (this.gameState === 'gameOver') {
+                this.start();
+            }
         });
         
         this.canvas.addEventListener('mouseup', (e) => {
             e.preventDefault();
-            this.handleJumpEnd();
+            if (this.gameState === 'playing') {
+                this.handleJumpEnd();
+            }
         });
         
-        // 滑鼠離開時也結束跳躍
         this.canvas.addEventListener('mouseleave', (e) => {
-            this.handleJumpEnd();
+            if (this.gameState === 'playing') {
+                this.handleJumpEnd();
+            }
         });
 
-        // 按鈕事件
-        this.startBtn.addEventListener('click', () => this.start());
-        this.restartBtn.addEventListener('click', () => this.restart());
-        this.muteBtn.addEventListener('click', () => this.toggleMute());
+        // 重新開始按鈕
+        this.restartBtn.addEventListener('click', () => this.start());
     }
 
     // 處理跳躍開始
@@ -284,10 +294,9 @@ class Game {
     start() {
         this.gameState = 'playing';
         this.score = 0;
+        this.gameStartTime = Date.now();
         this.updateScore();
         
-        this.startBtn.style.display = 'none';
-        this.restartBtn.style.display = 'none';
         this.gameOverElement.style.display = 'none';
         
         this.hedgehog.reset();
@@ -310,14 +319,11 @@ class Game {
         if (this.score > this.highScore) {
             this.highScore = this.score;
             this.storage.saveHighScore(this.highScore);
-            this.highScoreElement.textContent = this.highScore;
+            this.highScoreElement.textContent = `HI ${this.highScore.toString().padStart(5, '0')}`;
         }
         
         // 顯示遊戲結束畫面
-        this.finalScoreElement.textContent = this.score;
-        this.finalHighScoreElement.textContent = this.highScore;
         this.gameOverElement.style.display = 'block';
-        this.restartBtn.style.display = 'inline-block';
         
         this.playSound('collision');
     }
@@ -334,21 +340,18 @@ class Game {
         this.muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
     }
 
-    // 更新分數
+    // 更新分數（基於存活時間）
     updateScore() {
-        this.scoreElement.textContent = this.score;
+        if (this.gameState === 'playing') {
+            const currentTime = Date.now();
+            this.score = Math.floor((currentTime - this.gameStartTime) / 100);
+            this.scoreElement.textContent = this.score.toString().padStart(5, '0');
+        }
     }
 
-    // 增加分數
+    // 增加分數（不再使用，改為時間計分）
     addScore(points = 1) {
-        this.score += points;
-        this.updateScore();
-        this.playSound('score');
-        
-        // 每15分增加難度（因為現在分數增加更快）
-        if (this.score % 15 === 0 && this.score > 0) {
-            this.mushroomManager.increaseDifficulty();
-        }
+        // 不再使用點數計分，改為時間計分
     }
 
     // 遊戲主循環
@@ -366,6 +369,9 @@ class Game {
 
     // 更新遊戲狀態
     update(deltaTime) {
+        // 更新分數（基於時間）
+        this.updateScore();
+        
         // 更新刺蝟
         this.hedgehog.update();
         
@@ -384,19 +390,16 @@ class Game {
             }
         }
         
-        // 檢查得分（蘑菇通過刺蝟位置）
+        // 移除離開螢幕的蘑菇
         for (let i = mushrooms.length - 1; i >= 0; i--) {
-            const mushroom = mushrooms[i];
-            // 如果蘑菇已經通過刺蝟位置且未被計分
-            if (mushroom.x + mushroom.width < this.hedgehog.x && !mushroom.scored) {
-                this.addScore(mushroom.points);
-                mushroom.scored = true; // 標記為已計分
-            }
-            
-            // 移除離開螢幕的蘑菇
-            if (mushroom.isOffScreen()) {
+            if (mushrooms[i].isOffScreen()) {
                 mushrooms.splice(i, 1);
             }
+        }
+        
+        // 根據時間增加難度
+        if (this.score > 0 && this.score % 100 === 0) {
+            this.mushroomManager.increaseDifficulty();
         }
     }
 

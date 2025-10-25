@@ -168,8 +168,8 @@ class MushroomManager {
 
     // 生成新蘑菇
     spawnMushroom() {
-        const canvasHeight = window.innerHeight;
-        const groundY = canvasHeight - 50;
+        const canvasHeight = 150;
+        const groundY = 120;
         
         // 隨機大小
         const size = Math.random() < 0.4 ? 'small' : Math.random() < 0.8 ? 'medium' : 'large';
@@ -190,7 +190,7 @@ class MushroomManager {
                 break;
         }
 
-        const mushroom = new Mushroom(window.innerWidth, groundY - height, width, height, this.speed);
+        const mushroom = new Mushroom(600, groundY - height, width, height, this.speed);
         this.mushrooms.push(mushroom);
     }
 
