@@ -15,6 +15,17 @@ class Mushroom {
         this.animationFrame = 0;
         this.animationSpeed = 0.15;
         
+        // 計分標記
+        this.scored = false;
+        
+        // 圖片載入
+        this.image = new Image();
+        this.imageLoaded = false;
+        this.image.onload = () => {
+            this.imageLoaded = true;
+        };
+        this.image.src = 'assets/images/mushroom1.png';
+        
         // 根據類型設定特殊屬性
         this.setTypeProperties();
     }
@@ -52,34 +63,40 @@ class Mushroom {
         }
     }
 
-    // 繪製蘑菇（簡化版）
+    // 繪製蘑菇
     draw(ctx) {
         ctx.save();
         
-        // 簡潔的蘑菇莖
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(this.x + this.width * 0.4, this.y + this.height * 0.6, 
-                    this.width * 0.2, this.height * 0.4);
+        if (this.imageLoaded) {
+            // 使用上傳的蘑菇圖片
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        } else {
+            // 如果圖片未載入，顯示簡潔的矩形
+            // 簡潔的蘑菇莖
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(this.x + this.width * 0.4, this.y + this.height * 0.6, 
+                        this.width * 0.2, this.height * 0.4);
 
-        // 簡潔的蘑菇帽
-        let capColor;
-        switch(this.type) {
-            case 'red':
-                capColor = '#FF4444';
-                break;
-            case 'brown':
-                capColor = '#8B4513';
-                break;
-            case 'purple':
-                capColor = '#8A2BE2';
-                break;
-            case 'yellow':
-                capColor = '#FFD700';
-                break;
+            // 簡潔的蘑菇帽
+            let capColor;
+            switch(this.type) {
+                case 'red':
+                    capColor = '#FF4444';
+                    break;
+                case 'brown':
+                    capColor = '#8B4513';
+                    break;
+                case 'purple':
+                    capColor = '#8A2BE2';
+                    break;
+                case 'yellow':
+                    capColor = '#FFD700';
+                    break;
+            }
+            
+            ctx.fillStyle = capColor;
+            ctx.fillRect(this.x, this.y, this.width, this.height * 0.6);
         }
-        
-        ctx.fillStyle = capColor;
-        ctx.fillRect(this.x, this.y, this.width, this.height * 0.6);
 
         ctx.restore();
     }

@@ -17,10 +17,13 @@ class Hedgehog {
         this.animationFrame = 0;
         this.animationSpeed = 0.1;
         
-        // 顏色（暫時用矩形代替圖片）
-        this.color = '#8B4513'; // 棕色
-        this.eyeColor = '#000000';
-        this.spikeColor = '#654321';
+        // 圖片載入
+        this.image = new Image();
+        this.imageLoaded = false;
+        this.image.onload = () => {
+            this.imageLoaded = true;
+        };
+        this.image.src = 'assets/images/character.png';
     }
 
     // 跳躍
@@ -51,26 +54,23 @@ class Hedgehog {
         }
     }
 
-    // 繪製刺蝟（簡化版，像 Chrome 恐龍）
+    // 繪製刺蝟
     draw(ctx) {
         ctx.save();
         
-        // 簡潔的刺蝟身體
-        ctx.fillStyle = '#535353';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-
-        // 簡潔的刺
-        ctx.fillStyle = '#535353';
-        for (let i = 0; i < 5; i++) {
-            const spikeX = this.x + (i * this.width / 4);
-            const spikeY = this.y - 3;
-            ctx.fillRect(spikeX, spikeY, 3, 6);
+        if (this.imageLoaded) {
+            // 使用上傳的刺蝟圖片
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        } else {
+            // 如果圖片未載入，顯示簡潔的矩形
+            ctx.fillStyle = '#535353';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            
+            // 簡潔的眼睛
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(this.x + this.width * 0.3, this.y + this.height * 0.3, 2, 2);
+            ctx.fillRect(this.x + this.width * 0.7, this.y + this.height * 0.3, 2, 2);
         }
-
-        // 簡潔的眼睛
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(this.x + this.width * 0.3, this.y + this.height * 0.3, 2, 2);
-        ctx.fillRect(this.x + this.width * 0.7, this.y + this.height * 0.3, 2, 2);
 
         ctx.restore();
     }

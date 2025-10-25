@@ -281,11 +281,17 @@ class Game {
             }
         }
         
-        // 檢查得分（蘑菇離開螢幕）
+        // 檢查得分（蘑菇通過刺蝟位置）
         for (let i = mushrooms.length - 1; i >= 0; i--) {
-            if (mushrooms[i].isOffScreen()) {
-                this.addScore(mushrooms[i].points);
-                // 移除已得分的蘑菇，避免重複計分
+            const mushroom = mushrooms[i];
+            // 如果蘑菇已經通過刺蝟位置且未被計分
+            if (mushroom.x + mushroom.width < this.hedgehog.x && !mushroom.scored) {
+                this.addScore(mushroom.points);
+                mushroom.scored = true; // 標記為已計分
+            }
+            
+            // 移除離開螢幕的蘑菇
+            if (mushroom.isOffScreen()) {
                 mushrooms.splice(i, 1);
             }
         }
