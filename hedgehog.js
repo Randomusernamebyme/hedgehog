@@ -22,6 +22,10 @@ class Hedgehog {
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;
+            console.log('刺蝟圖片載入完成');
+        };
+        this.image.onerror = () => {
+            console.warn('刺蝟圖片載入失敗，使用預設圖形');
         };
         this.image.src = 'assets/images/character.png';
     }

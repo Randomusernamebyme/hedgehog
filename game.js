@@ -56,6 +56,9 @@ class Game {
         
         console.log('Canvas 尺寸:', this.canvas.width, 'x', this.canvas.height);
         
+        // 預載入所有圖片
+        this.preloadImages();
+        
         // 初始化遊戲物件
         this.hedgehog = new Hedgehog(100, 300, 40, 40);
         this.mushroomManager = new MushroomManager();
@@ -76,17 +79,65 @@ class Game {
         // 設置事件監聽器
         this.setupEventListeners();
         
-        // 隱藏載入指示器，顯示 Canvas
-        const loadingElement = document.getElementById('loading');
-        if (loadingElement) {
-            loadingElement.style.display = 'none';
-        }
-        this.canvas.style.display = 'block';
-        
-        // 繪製初始畫面
+        // 繪製初始畫面（Canvas 會在圖片載入完成後顯示）
         this.draw();
         
-        console.log('遊戲初始化完成，Canvas 已顯示');
+        console.log('遊戲初始化完成，等待圖片載入...');
+    }
+
+    // 預載入所有圖片
+    preloadImages() {
+        const images = [
+            'assets/images/character.png',
+            'assets/images/mushroom1.png',
+            'assets/images/mushroom2.png',
+            'assets/images/mushroom3.png'
+        ];
+        
+        let loadedCount = 0;
+        const totalImages = images.length;
+        const loadingProgress = document.getElementById('loading-progress');
+        
+        images.forEach((src, index) => {
+            const img = new Image();
+            img.onload = () => {
+                loadedCount++;
+                console.log(`圖片載入完成: ${src} (${loadedCount}/${totalImages})`);
+                
+                // 更新載入進度
+                if (loadingProgress) {
+                    loadingProgress.textContent = `載入圖片中... ${loadedCount}/${totalImages}`;
+                }
+                
+                if (loadedCount === totalImages) {
+                    console.log('所有圖片載入完成！');
+                    // 隱藏載入指示器，顯示 Canvas
+                    const loadingElement = document.getElementById('loading');
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                    this.canvas.style.display = 'block';
+                    // 所有圖片載入完成後，重新繪製一次
+                    this.draw();
+                }
+            };
+            img.onerror = () => {
+                console.warn(`圖片載入失敗: ${src}`);
+                loadedCount++;
+                if (loadingProgress) {
+                    loadingProgress.textContent = `載入圖片中... ${loadedCount}/${totalImages}`;
+                }
+                if (loadedCount === totalImages) {
+                    const loadingElement = document.getElementById('loading');
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                    this.canvas.style.display = 'block';
+                    this.draw();
+                }
+            };
+            img.src = src;
+        });
     }
 
     // 初始化音效

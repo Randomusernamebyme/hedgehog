@@ -24,6 +24,9 @@ class Mushroom {
         this.image.onload = () => {
             this.imageLoaded = true;
         };
+        this.image.onerror = () => {
+            console.warn(`蘑菇圖片載入失敗: ${this.type}`);
+        };
         
         // 根據蘑菇類型選擇圖片
         switch(this.type) {
