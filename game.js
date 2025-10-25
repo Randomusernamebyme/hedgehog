@@ -365,21 +365,47 @@ class Game {
         if (!this.stars) {
             this.stars = [];
             // 生成隨機星星
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 30; i++) {
                 this.stars.push({
                     x: Math.random() * this.canvas.width,
                     y: Math.random() * (this.canvas.height - 50),
                     size: Math.random() * 2 + 1,
-                    brightness: Math.random() * 0.8 + 0.2
+                    brightness: Math.random() * 0.8 + 0.2,
+                    twinkleSpeed: Math.random() * 0.05 + 0.02,
+                    twinklePhase: Math.random() * Math.PI * 2,
+                    moveSpeed: Math.random() * 0.5 + 0.1,
+                    originalX: Math.random() * this.canvas.width
                 });
             }
         }
+        
+        // 更新星星動畫
+        const currentTime = Date.now() * 0.001;
+        this.stars.forEach(star => {
+            // 閃爍效果
+            star.twinklePhase += star.twinkleSpeed;
+            const twinkle = Math.sin(star.twinklePhase) * 0.3 + 0.7;
+            star.brightness = twinkle * (Math.random() * 0.3 + 0.7);
+            
+            // 緩慢移動效果
+            star.x = star.originalX + Math.sin(currentTime * star.moveSpeed) * 10;
+            
+            // 確保星星在畫布範圍內
+            if (star.x < 0) star.x = this.canvas.width;
+            if (star.x > this.canvas.width) star.x = 0;
+        });
         
         // 繪製星星
         this.stars.forEach(star => {
             this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
             this.ctx.beginPath();
             this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // 添加星星光暈效果
+            this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness * 0.3})`;
+            this.ctx.beginPath();
+            this.ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
             this.ctx.fill();
         });
     }
