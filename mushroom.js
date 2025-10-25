@@ -117,6 +117,16 @@ class Mushroom {
     draw(ctx) {
         ctx.save();
         
+        // 確保蘑菇在正確的位置
+        if (this.x < -200 || this.x > 800) {
+            console.warn(`蘑菇位置異常: X=${this.x}, Y=${this.y}, 速度=${this.speed}`);
+            ctx.restore();
+            return; // 不繪製異常位置的蘑菇
+        }
+        
+        // 確保蘑菇在正確的圖層
+        ctx.globalCompositeOperation = 'source-over';
+        
         if (this.imageLoaded) {
             // 使用上傳的蘑菇圖片
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -237,7 +247,11 @@ class MushroomManager {
 
     // 繪製所有蘑菇
     draw(ctx) {
+        // 確保蘑菇在正確的圖層
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
         this.mushrooms.forEach(mushroom => mushroom.draw(ctx));
+        ctx.restore();
     }
 
     // 增加難度

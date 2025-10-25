@@ -303,7 +303,7 @@ class Game {
         // 更新刺蝟
         this.hedgehog.update(deltaTime);
         
-        // 更新蘑菇
+        // 更新蘑菇並檢查碰撞
         this.mushroomManager.update(deltaTime);
         
         // 檢查碰撞
