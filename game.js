@@ -352,17 +352,44 @@ class Game {
 
     // 繪製背景
     drawBackground() {
-        // 簡潔的白色背景，像 Chrome 恐龍
-        this.ctx.fillStyle = '#f7f7f7';
+        // 黑夜背景
+        this.ctx.fillStyle = '#000000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // 繪製星星
+        this.drawStars();
+    }
+    
+    // 繪製星星
+    drawStars() {
+        if (!this.stars) {
+            this.stars = [];
+            // 生成隨機星星
+            for (let i = 0; i < 20; i++) {
+                this.stars.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * (this.canvas.height - 50),
+                    size: Math.random() * 2 + 1,
+                    brightness: Math.random() * 0.8 + 0.2
+                });
+            }
+        }
+        
+        // 繪製星星
+        this.stars.forEach(star => {
+            this.ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+            this.ctx.beginPath();
+            this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
     }
 
     // 繪製地面
     drawGround() {
         const groundY = this.canvas.height - 50;
         
-        // 簡潔的地面線條，像 Chrome 恐龍
-        this.ctx.strokeStyle = '#535353';
+        // 黑夜主題的地面線條
+        this.ctx.strokeStyle = '#ffffff';
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(0, groundY);
@@ -370,9 +397,9 @@ class Game {
         this.ctx.stroke();
     }
 
-    // 繪製雲朵（簡化版）
+    // 繪製雲朵（黑夜主題下移除）
     drawClouds() {
-        // 移除雲朵，保持簡潔
+        // 黑夜主題下不繪製雲朵，保持星空效果
     }
 }
 
