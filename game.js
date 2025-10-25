@@ -72,7 +72,6 @@ class Game {
         
         // 載入靜音狀態
         this.isMuted = this.storage.getMuteState();
-        this.updateMuteButton();
         
         // 初始化音效
         this.initAudio();
@@ -106,7 +105,6 @@ class Game {
         
         let loadedCount = 0;
         const totalImages = images.length;
-        const loadingProgress = document.getElementById('loading-progress');
         
         images.forEach((src, index) => {
             const img = new Image();
@@ -114,19 +112,8 @@ class Game {
                 loadedCount++;
                 console.log(`圖片載入完成: ${src} (${loadedCount}/${totalImages})`);
                 
-                // 更新載入進度
-                if (loadingProgress) {
-                    loadingProgress.textContent = `載入圖片中... ${loadedCount}/${totalImages}`;
-                }
-                
                 if (loadedCount === totalImages) {
                     console.log('所有圖片載入完成！');
-                    // 隱藏載入指示器，顯示 Canvas
-                    const loadingElement = document.getElementById('loading');
-                    if (loadingElement) {
-                        loadingElement.style.display = 'none';
-                    }
-                    this.canvas.style.display = 'block';
                     // 所有圖片載入完成後，重新繪製一次
                     this.draw();
                 }
@@ -134,15 +121,7 @@ class Game {
             img.onerror = () => {
                 console.warn(`圖片載入失敗: ${src}`);
                 loadedCount++;
-                if (loadingProgress) {
-                    loadingProgress.textContent = `載入圖片中... ${loadedCount}/${totalImages}`;
-                }
                 if (loadedCount === totalImages) {
-                    const loadingElement = document.getElementById('loading');
-                    if (loadingElement) {
-                        loadingElement.style.display = 'none';
-                    }
-                    this.canvas.style.display = 'block';
                     this.draw();
                 }
             };
@@ -332,12 +311,6 @@ class Game {
     toggleMute() {
         this.isMuted = !this.isMuted;
         this.storage.saveMuteState(this.isMuted);
-        this.updateMuteButton();
-    }
-
-    // 更新靜音按鈕
-    updateMuteButton() {
-        this.muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
     }
 
     // 更新分數（基於存活時間）
