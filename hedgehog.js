@@ -17,6 +17,12 @@ class Hedgehog {
         this.animationFrame = 0;
         this.animationSpeed = 0.1;
         
+        // 按壓時間控制
+        this.jumpStartTime = 0;
+        this.maxJumpTime = 500; // 最大按壓時間 500ms
+        this.minJumpForce = -8;
+        this.maxJumpForce = -15;
+        
         // 圖片載入
         this.image = new Image();
         this.imageLoaded = false;
@@ -30,12 +36,31 @@ class Hedgehog {
         this.image.src = 'assets/images/character.png';
     }
 
-    // 跳躍
-    jump() {
+    // 開始跳躍（按壓開始）
+    startJump() {
         if (!this.isJumping) {
-            this.velocityY = this.jumpForce;
-            this.isJumping = true;
+            this.jumpStartTime = Date.now();
         }
+    }
+    
+    // 結束跳躍（按壓結束）
+    endJump() {
+        if (!this.isJumping && this.jumpStartTime > 0) {
+            const pressDuration = Date.now() - this.jumpStartTime;
+            const jumpTime = Math.min(pressDuration, this.maxJumpTime);
+            const jumpRatio = jumpTime / this.maxJumpTime;
+            
+            // 根據按壓時間計算跳躍力
+            this.velocityY = this.minJumpForce + (this.maxJumpForce - this.minJumpForce) * jumpRatio;
+            this.isJumping = true;
+            this.jumpStartTime = 0;
+        }
+    }
+    
+    // 跳躍（舊方法，保持兼容性）
+    jump() {
+        this.startJump();
+        setTimeout(() => this.endJump(), 100); // 短按預設跳躍
     }
 
     // 更新位置和物理

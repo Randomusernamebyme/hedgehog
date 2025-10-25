@@ -4,6 +4,9 @@ class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         
+        // 設置全螢幕 Canvas
+        this.setupFullscreenCanvas();
+        
         // 遊戲狀態
         this.gameState = 'waiting'; // waiting, playing, gameOver
         this.score = 0;
@@ -60,7 +63,8 @@ class Game {
         this.preloadImages();
         
         // 初始化遊戲物件
-        this.hedgehog = new Hedgehog(100, 300, 40, 40);
+        const groundY = window.innerHeight - 50;
+        this.hedgehog = new Hedgehog(100, groundY - 40, 40, 40);
         this.mushroomManager = new MushroomManager();
         this.collisionDetector = new CollisionDetector();
         this.storage = new GameStorage();
@@ -83,6 +87,23 @@ class Game {
         this.draw();
         
         console.log('遊戲初始化完成，等待圖片載入...');
+    }
+    
+    // 設置全螢幕 Canvas
+    setupFullscreenCanvas() {
+        const resizeCanvas = () => {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.canvas.style.width = '100vw';
+            this.canvas.style.height = '100vh';
+            this.canvas.style.position = 'fixed';
+            this.canvas.style.top = '0';
+            this.canvas.style.left = '0';
+            this.canvas.style.zIndex = '1';
+        };
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
     }
 
     // 預載入所有圖片
@@ -193,23 +214,46 @@ class Game {
 
     // 設置事件監聽器
     setupEventListeners() {
-        // 鍵盤事件
+        // 鍵盤事件 - 按壓控制
         document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.repeat) {
+                e.preventDefault();
+                this.handleJumpStart();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
-                this.handleJump();
+                this.handleJumpEnd();
             }
         });
 
-        // 觸控事件
+        // 觸控事件 - 按壓控制
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            this.handleJump();
+            this.handleJumpStart();
+        });
+        
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.handleJumpEnd();
         });
 
-        this.canvas.addEventListener('click', (e) => {
+        // 滑鼠事件 - 按壓控制
+        this.canvas.addEventListener('mousedown', (e) => {
             e.preventDefault();
-            this.handleJump();
+            this.handleJumpStart();
+        });
+        
+        this.canvas.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            this.handleJumpEnd();
+        });
+        
+        // 滑鼠離開時也結束跳躍
+        this.canvas.addEventListener('mouseleave', (e) => {
+            this.handleJumpEnd();
         });
 
         // 按鈕事件
@@ -218,14 +262,27 @@ class Game {
         this.muteBtn.addEventListener('click', () => this.toggleMute());
     }
 
-    // 處理跳躍
-    handleJump() {
+    // 處理跳躍開始
+    handleJumpStart() {
         if (this.gameState === 'playing') {
-            this.hedgehog.jump();
-            this.playSound('jump');
+            this.hedgehog.startJump();
         } else if (this.gameState === 'waiting') {
             this.start();
         }
+    }
+    
+    // 處理跳躍結束
+    handleJumpEnd() {
+        if (this.gameState === 'playing') {
+            this.hedgehog.endJump();
+            this.playSound('jump');
+        }
+    }
+    
+    // 處理跳躍（舊方法，保持兼容性）
+    handleJump() {
+        this.handleJumpStart();
+        setTimeout(() => this.handleJumpEnd(), 100);
     }
 
     // 開始遊戲
