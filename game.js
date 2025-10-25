@@ -279,11 +279,6 @@ class Game {
         }
     }
     
-    // 處理跳躍（舊方法，保持兼容性）
-    handleJump() {
-        this.handleJumpStart();
-        setTimeout(() => this.handleJumpEnd(), 100);
-    }
 
     // 開始遊戲
     start() {

@@ -140,11 +140,10 @@ class MushroomManager {
     constructor() {
         this.mushrooms = [];
         this.spawnTimer = 0;
-        this.spawnInterval = 2000; // 2秒生成一個
-        this.minSpawnInterval = 1000; // 最小間隔1秒
+        this.spawnInterval = 3000; // 3秒生成一個
+        this.minSpawnInterval = 2000; // 最小間隔2秒
         this.speed = 3;
         this.maxSpeed = 8;
-        this.comboChance = 0.3; // 30% 機率生成組合蘑菇
     }
 
     // 更新所有蘑菇
@@ -172,18 +171,8 @@ class MushroomManager {
         const canvasHeight = window.innerHeight;
         const groundY = canvasHeight - 50;
         
-        // 決定是否生成組合蘑菇
-        if (Math.random() < this.comboChance) {
-            this.spawnComboMushrooms(groundY);
-        } else {
-            this.spawnSingleMushroom(groundY);
-        }
-    }
-    
-    // 生成單個蘑菇
-    spawnSingleMushroom(groundY) {
         // 隨機大小
-        const size = Math.random() < 0.3 ? 'small' : Math.random() < 0.7 ? 'medium' : 'large';
+        const size = Math.random() < 0.4 ? 'small' : Math.random() < 0.8 ? 'medium' : 'large';
         let width, height;
         
         switch (size) {
@@ -204,32 +193,6 @@ class MushroomManager {
         const mushroom = new Mushroom(window.innerWidth, groundY - height, width, height, this.speed);
         this.mushrooms.push(mushroom);
     }
-    
-    // 生成組合蘑菇
-    spawnComboMushrooms(groundY) {
-        const comboCount = Math.floor(Math.random() * 3) + 2; // 2-4個蘑菇
-        const spacing = 60; // 蘑菇間距
-        
-        for (let i = 0; i < comboCount; i++) {
-            const size = Math.random() < 0.5 ? 'small' : 'medium';
-            let width, height;
-            
-            switch (size) {
-                case 'small':
-                    width = 25;
-                    height = 30;
-                    break;
-                case 'medium':
-                    width = 35;
-                    height = 40;
-                    break;
-            }
-            
-            const x = window.innerWidth + (i * spacing);
-            const mushroom = new Mushroom(x, groundY - height, width, height, this.speed);
-            this.mushrooms.push(mushroom);
-        }
-    }
 
     // 繪製所有蘑菇
     draw(ctx) {
@@ -247,7 +210,7 @@ class MushroomManager {
         this.mushrooms = [];
         this.spawnTimer = 0;
         this.speed = 3;
-        this.spawnInterval = 2000;
+        this.spawnInterval = 3000;
     }
 
     // 獲取所有蘑菇

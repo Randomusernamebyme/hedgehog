@@ -57,11 +57,6 @@ class Hedgehog {
         }
     }
     
-    // 跳躍（舊方法，保持兼容性）
-    jump() {
-        this.startJump();
-        setTimeout(() => this.endJump(), 100); // 短按預設跳躍
-    }
 
     // 更新位置和物理
     update() {

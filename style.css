@@ -46,7 +46,7 @@ body {
     gap: 20px;
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
 }
 
 .controls {
@@ -55,18 +55,18 @@ body {
 }
 
 .control-btn {
-    background: #4CAF50;
+    background: #333333;
     color: white;
-    border: none;
+    border: 1px solid #555;
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     transition: background 0.3s;
 }
 
 .control-btn:hover {
-    background: #45a049;
+    background: #555555;
 }
 
 #gameCanvas {
@@ -105,25 +105,26 @@ body {
 
 .instructions {
     margin: 15px 0;
-    color: #666;
+    color: #cccccc;
     font-size: 16px;
 }
 
 .game-over {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     color: white;
     padding: 30px;
-    border-radius: 15px;
+    border: 2px solid #333;
+    border-radius: 8px;
     text-align: center;
     z-index: 1000;
 }
 
 .game-over h2 {
-    color: #FF6B6B;
+    color: #ffffff;
     margin-bottom: 15px;
     font-size: 28px;
 }
