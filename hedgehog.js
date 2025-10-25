@@ -51,35 +51,26 @@ class Hedgehog {
         }
     }
 
-    // 繪製刺蝟
+    // 繪製刺蝟（簡化版，像 Chrome 恐龍）
     draw(ctx) {
         ctx.save();
         
-        // 繪製陰影
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.beginPath();
-        ctx.ellipse(this.x + this.width/2 + 2, this.y + this.height + 2, 
-                   this.width/2, this.height/2, 0, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // 繪製刺蝟身體（漸層橢圓形）
-        const bodyGradient = ctx.createRadialGradient(
-            this.x + this.width/2, this.y + this.height/2, 0,
-            this.x + this.width/2, this.y + this.height/2, this.width/2
-        );
-        bodyGradient.addColorStop(0, '#D2691E');
-        bodyGradient.addColorStop(1, '#8B4513');
-        ctx.fillStyle = bodyGradient;
-        ctx.beginPath();
-        ctx.ellipse(this.x + this.width/2, this.y + this.height/2, 
-                   this.width/2, this.height/2, 0, 0, 2 * Math.PI);
-        ctx.fill();
+        // 簡潔的刺蝟身體
+        ctx.fillStyle = '#535353';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
 
-        // 繪製刺蝟的刺（更精緻的設計）
-        this.drawSpikes(ctx);
+        // 簡潔的刺
+        ctx.fillStyle = '#535353';
+        for (let i = 0; i < 5; i++) {
+            const spikeX = this.x + (i * this.width / 4);
+            const spikeY = this.y - 3;
+            ctx.fillRect(spikeX, spikeY, 3, 6);
+        }
 
-        // 繪製臉部
-        this.drawFace(ctx);
+        // 簡潔的眼睛
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(this.x + this.width * 0.3, this.y + this.height * 0.3, 2, 2);
+        ctx.fillRect(this.x + this.width * 0.7, this.y + this.height * 0.3, 2, 2);
 
         ctx.restore();
     }

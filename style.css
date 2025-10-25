@@ -12,26 +12,25 @@ html, body {
 }
 
 body {
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
-    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    overflow: hidden;
+    min-height: 100vh;
 }
 
 .game-container {
     text-align: center;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 900px;
     width: 100%;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .game-header {
@@ -71,10 +70,9 @@ body {
 }
 
 #gameCanvas {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    background: linear-gradient(to bottom, #4a90e2 0%, #7ed321 60%, #50c878 100%);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f7f7f7;
     display: block;
     margin: 0 auto;
     position: relative;
@@ -85,23 +83,20 @@ body {
 }
 
 .game-btn {
-    background: #FF6B6B;
+    background: #4285f4;
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
+    padding: 10px 20px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: normal;
     margin: 0 10px;
-    transition: all 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
 }
 
 .game-btn:hover {
-    background: #FF5252;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background: #3367d6;
 }
 
 .game-btn:active {

@@ -285,6 +285,8 @@ class Game {
         for (let i = mushrooms.length - 1; i >= 0; i--) {
             if (mushrooms[i].isOffScreen()) {
                 this.addScore(mushrooms[i].points);
+                // 移除已得分的蘑菇，避免重複計分
+                mushrooms.splice(i, 1);
             }
         }
     }
@@ -310,12 +312,8 @@ class Game {
 
     // 繪製背景
     drawBackground() {
-        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, '#87CEEB');
-        gradient.addColorStop(0.7, '#98FB98');
-        gradient.addColorStop(1, '#8FBC8F');
-        
-        this.ctx.fillStyle = gradient;
+        // 簡潔的白色背景，像 Chrome 恐龍
+        this.ctx.fillStyle = '#f7f7f7';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -323,12 +321,8 @@ class Game {
     drawGround() {
         const groundY = this.canvas.height - 50;
         
-        // 地面
-        this.ctx.fillStyle = '#8FBC8F';
-        this.ctx.fillRect(0, groundY, this.canvas.width, 50);
-        
-        // 地面線條
-        this.ctx.strokeStyle = '#7BA05B';
+        // 簡潔的地面線條，像 Chrome 恐龍
+        this.ctx.strokeStyle = '#535353';
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(0, groundY);
@@ -336,26 +330,9 @@ class Game {
         this.ctx.stroke();
     }
 
-    // 繪製雲朵
+    // 繪製雲朵（簡化版）
     drawClouds() {
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        
-        // 簡單的雲朵
-        for (let i = 0; i < 3; i++) {
-            const x = 150 + i * 250;
-            const y = 50 + i * 20;
-            this.drawCloud(x, y);
-        }
-    }
-
-    // 繪製單個雲朵
-    drawCloud(x, y) {
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, 20, 0, 2 * Math.PI);
-        this.ctx.arc(x + 25, y, 25, 0, 2 * Math.PI);
-        this.ctx.arc(x + 50, y, 20, 0, 2 * Math.PI);
-        this.ctx.arc(x + 25, y - 15, 20, 0, 2 * Math.PI);
-        this.ctx.fill();
+        // 移除雲朵，保持簡潔
     }
 }
 

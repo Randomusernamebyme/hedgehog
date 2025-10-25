@@ -52,27 +52,34 @@ class Mushroom {
         }
     }
 
-    // 繪製蘑菇
+    // 繪製蘑菇（簡化版）
     draw(ctx) {
         ctx.save();
         
-        // 繪製陰影
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.beginPath();
-        ctx.ellipse(this.x + this.width/2 + 2, this.y + this.height + 2, 
-                   this.width/2, 5, 0, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // 繪製蘑菇莖
-        const stemGradient = ctx.createLinearGradient(0, this.y + this.height * 0.6, 0, this.y + this.height);
-        stemGradient.addColorStop(0, '#8B4513');
-        stemGradient.addColorStop(1, '#654321');
-        ctx.fillStyle = stemGradient;
+        // 簡潔的蘑菇莖
+        ctx.fillStyle = '#8B4513';
         ctx.fillRect(this.x + this.width * 0.4, this.y + this.height * 0.6, 
                     this.width * 0.2, this.height * 0.4);
 
-        // 根據類型繪製蘑菇帽
-        this.drawMushroomCap(ctx);
+        // 簡潔的蘑菇帽
+        let capColor;
+        switch(this.type) {
+            case 'red':
+                capColor = '#FF4444';
+                break;
+            case 'brown':
+                capColor = '#8B4513';
+                break;
+            case 'purple':
+                capColor = '#8A2BE2';
+                break;
+            case 'yellow':
+                capColor = '#FFD700';
+                break;
+        }
+        
+        ctx.fillStyle = capColor;
+        ctx.fillRect(this.x, this.y, this.width, this.height * 0.6);
 
         ctx.restore();
     }
