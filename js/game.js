@@ -34,11 +34,28 @@ class Game {
         this.finalScoreElement = document.getElementById('final-score');
         this.finalHighScoreElement = document.getElementById('final-high-score');
         
+        // 檢查必要的 UI 元素
+        if (!this.scoreElement || !this.highScoreElement || !this.startBtn) {
+            console.warn('某些 UI 元素未找到，但遊戲仍可運行');
+        }
+        
         this.init();
     }
 
     // 初始化遊戲
     init() {
+        // 檢查 Canvas 元素是否存在
+        if (!this.canvas) {
+            throw new Error('找不到 Canvas 元素！');
+        }
+        
+        // 檢查 Canvas 上下文
+        if (!this.ctx) {
+            throw new Error('無法取得 Canvas 2D 上下文！');
+        }
+        
+        console.log('Canvas 尺寸:', this.canvas.width, 'x', this.canvas.height);
+        
         // 初始化遊戲物件
         this.hedgehog = new Hedgehog(100, 300, 40, 40);
         this.mushroomManager = new MushroomManager();
@@ -59,8 +76,17 @@ class Game {
         // 設置事件監聽器
         this.setupEventListeners();
         
+        // 隱藏載入指示器，顯示 Canvas
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+        this.canvas.style.display = 'block';
+        
         // 繪製初始畫面
         this.draw();
+        
+        console.log('遊戲初始化完成，Canvas 已顯示');
     }
 
     // 初始化音效
@@ -335,5 +361,19 @@ class Game {
 
 // 當頁面載入完成時啟動遊戲
 document.addEventListener('DOMContentLoaded', () => {
-    new Game();
+    try {
+        console.log('正在初始化遊戲...');
+        new Game();
+        console.log('遊戲初始化完成！');
+    } catch (error) {
+        console.error('遊戲初始化失敗:', error);
+        // 顯示錯誤訊息給用戶
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+                <h2>遊戲載入失敗</h2>
+                <p>請重新整理頁面或檢查瀏覽器控制台</p>
+                <p>錯誤: ${error.message}</p>
+            </div>
+        `;
+    }
 });

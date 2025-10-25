@@ -5,6 +5,12 @@
     box-sizing: border-box;
 }
 
+/* 確保基本樣式載入 */
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
