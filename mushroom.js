@@ -187,8 +187,8 @@ class MushroomManager {
     constructor() {
         this.mushrooms = [];
         this.spawnTimer = 0;
-        this.spawnInterval = 2000; // 2秒生成一個
-        this.minSpawnInterval = 1000; // 最小間隔1秒
+        this.spawnInterval = 1500; // 1.5秒生成一個
+        this.minSpawnInterval = 800; // 最小間隔0.8秒
         this.baseSpeed = 3; // 基礎速度
         this.currentSpeed = 3; // 當前速度
         this.targetSpeed = 3; // 目標速度
@@ -226,6 +226,15 @@ class MushroomManager {
         if (this.spawnTimer >= this.spawnInterval) {
             this.spawnMushroom();
             this.spawnTimer = 0;
+            
+            // 隨機生成第二個蘑菇（增加挑戰性）
+            if (Math.random() < 0.3 && this.mushrooms.length < 3) {
+                setTimeout(() => {
+                    if (this.mushrooms.length < 3) {
+                        this.spawnMushroom();
+                    }
+                }, 200 + Math.random() * 300);
+            }
         }
     }
 
@@ -254,7 +263,7 @@ class MushroomManager {
         }
 
         // 從螢幕右邊生成蘑菇，確保不會重疊
-        const spawnX = Math.max(600, this.lastSpawnX + 150);
+        const spawnX = Math.max(600, this.lastSpawnX + 100);
         const mushroom = new Mushroom(spawnX, groundY - height, width, height, this.currentSpeed);
         this.mushrooms.push(mushroom);
         this.lastSpawnX = spawnX;
@@ -276,7 +285,7 @@ class MushroomManager {
     increaseDifficulty() {
         // 更平緩的速度增加，使用目標速度
         this.targetSpeed = Math.min(this.targetSpeed + 0.1, this.maxSpeed);
-        this.spawnInterval = Math.max(this.spawnInterval * 0.98, this.minSpawnInterval);
+        this.spawnInterval = Math.max(this.spawnInterval * 0.95, this.minSpawnInterval);
     }
     
     // 增加遊戲速度
@@ -291,7 +300,7 @@ class MushroomManager {
         this.spawnTimer = 0;
         this.currentSpeed = 3;
         this.targetSpeed = 3;
-        this.spawnInterval = 2000;
+        this.spawnInterval = 1500;
         this.lastSpawnX = 600;
     }
 
