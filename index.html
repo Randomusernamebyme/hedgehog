@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刺蝟蘑菇遊戲</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-display">
+                <span>分數: <span id="score">0</span></span>
+                <span>最高分: <span id="high-score">0</span></span>
+            </div>
+            <div class="controls">
+                <button id="mute-btn" class="control-btn">🔊</button>
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+        
+        <div class="game-controls">
+            <button id="start-btn" class="game-btn">開始遊戲</button>
+            <button id="restart-btn" class="game-btn" style="display: none;">重新開始</button>
+        </div>
+        
+        <div class="instructions">
+            <p>按空白鍵或點擊螢幕讓刺蝟跳躍避開蘑菇！</p>
+        </div>
+        
+        <div id="game-over" class="game-over" style="display: none;">
+            <h2>遊戲結束！</h2>
+            <p>你的分數: <span id="final-score">0</span></p>
+            <p>最高分: <span id="final-high-score">0</span></p>
+        </div>
+    </div>
+
+    <!-- 載入遊戲腳本 -->
+    <script src="js/storage.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/hedgehog.js"></script>
+    <script src="js/mushroom.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
