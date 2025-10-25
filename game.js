@@ -299,7 +299,7 @@ class Game {
         this.updateScore();
         
         // 更新刺蝟
-        this.hedgehog.update();
+        this.hedgehog.update(deltaTime);
         
         // 更新蘑菇
         this.mushroomManager.update(deltaTime);

@@ -20,17 +20,36 @@ class Hedgehog {
         // 簡化跳躍
         this.jumpForce = -12;
         
-        // 圖片載入
-        this.image = new Image();
-        this.imageLoaded = false;
-        this.image.onload = () => {
-            this.imageLoaded = true;
-            console.log('刺蝟圖片載入完成');
+        // 行走動畫圖片載入
+        this.walkImages = [];
+        this.walkImagesLoaded = 0;
+        this.currentWalkFrame = 0;
+        
+        // 載入3張行走動畫圖片
+        for (let i = 0; i < 3; i++) {
+            const img = new Image();
+            img.onload = () => {
+                this.walkImagesLoaded++;
+                console.log(`刺蝟行走圖片 ${i + 1} 載入完成`);
+            };
+            img.onerror = () => {
+                console.warn(`刺蝟行走圖片 ${i + 1} 載入失敗`);
+            };
+            img.src = `assets/images/hedgehog_walk_${i + 1}.png`;
+            this.walkImages.push(img);
+        }
+        
+        // 跳躍時使用的圖片（第一張）
+        this.jumpImage = new Image();
+        this.jumpImageLoaded = false;
+        this.jumpImage.onload = () => {
+            this.jumpImageLoaded = true;
+            console.log('刺蝟跳躍圖片載入完成');
         };
-        this.image.onerror = () => {
-            console.warn('刺蝟圖片載入失敗，使用預設圖形');
+        this.jumpImage.onerror = () => {
+            console.warn('刺蝟跳躍圖片載入失敗');
         };
-        this.image.src = 'assets/images/character.png';
+        this.jumpImage.src = 'assets/images/hedgehog_walk_1.png';
     }
 
     // 跳躍
@@ -43,7 +62,7 @@ class Hedgehog {
     
 
     // 更新位置和物理
-    update() {
+    update(deltaTime) {
         // 應用重力
         this.velocityY += this.gravity;
         this.y += this.velocityY;
@@ -55,10 +74,13 @@ class Hedgehog {
             this.isJumping = false;
         }
 
-        // 更新動畫
-        this.animationFrame += this.animationSpeed;
-        if (this.animationFrame >= 4) {
-            this.animationFrame = 0;
+        // 更新行走動畫（只有在地面時才播放）
+        if (!this.isJumping) {
+            this.animationFrame += this.animationSpeed * (deltaTime / 16.67);
+            if (this.animationFrame >= 3) {
+                this.animationFrame = 0;
+            }
+            this.currentWalkFrame = Math.floor(this.animationFrame);
         }
     }
 
@@ -66,21 +88,35 @@ class Hedgehog {
     draw(ctx) {
         ctx.save();
         
-        if (this.imageLoaded) {
-            // 使用上傳的刺蝟圖片
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        if (this.isJumping) {
+            // 跳躍時使用第一張圖片
+            if (this.jumpImageLoaded) {
+                ctx.drawImage(this.jumpImage, this.x, this.y, this.width, this.height);
+            } else {
+                this.drawFallback(ctx);
+            }
         } else {
-            // 如果圖片未載入，顯示簡潔的矩形
-            ctx.fillStyle = '#535353';
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-            
-            // 簡潔的眼睛
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(this.x + this.width * 0.3, this.y + this.height * 0.3, 2, 2);
-            ctx.fillRect(this.x + this.width * 0.7, this.y + this.height * 0.3, 2, 2);
+            // 行走時使用動畫
+            if (this.walkImagesLoaded === 3 && this.walkImages[this.currentWalkFrame]) {
+                ctx.drawImage(this.walkImages[this.currentWalkFrame], this.x, this.y, this.width, this.height);
+            } else {
+                this.drawFallback(ctx);
+            }
         }
 
         ctx.restore();
+    }
+    
+    // 備用繪製方法
+    drawFallback(ctx) {
+        // 如果圖片未載入，顯示簡潔的矩形
+        ctx.fillStyle = '#535353';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        
+        // 簡潔的眼睛
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(this.x + this.width * 0.3, this.y + this.height * 0.3, 2, 2);
+        ctx.fillRect(this.x + this.width * 0.7, this.y + this.height * 0.3, 2, 2);
     }
 
     // 重置位置

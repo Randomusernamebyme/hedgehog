@@ -97,11 +97,12 @@ class Mushroom {
     }
 
     // 更新位置
-    update() {
-        this.x -= this.speed;
+    update(deltaTime) {
+        // 使用 deltaTime 確保移動速度一致
+        this.x -= this.speed * (deltaTime / 16.67); // 16.67ms = 60fps
         
         // 更新動畫
-        this.animationFrame += this.animationSpeed;
+        this.animationFrame += this.animationSpeed * (deltaTime / 16.67);
         if (this.animationFrame >= 4) {
             this.animationFrame = 0;
         }
