@@ -436,52 +436,77 @@ class Game {
     
     // 繪製土壤質感
     drawSoilTexture(groundY, groundHeight) {
-        // 添加隨機土壤顆粒
-        for (let i = 0; i < 100; i++) {
-            const x = Math.random() * this.canvas.width;
-            const y = groundY + Math.random() * groundHeight;
-            const size = Math.random() * 2 + 0.5;
+        // 如果還沒有生成土壤細節，則生成一次
+        if (!this.soilParticles) {
+            this.soilParticles = [];
+            this.soilCracks = [];
+            this.soilStones = [];
             
-            this.ctx.fillStyle = `rgba(139, 69, 19, ${Math.random() * 0.5 + 0.3})`;
-            this.ctx.beginPath();
-            this.ctx.arc(x, y, size, 0, Math.PI * 2);
-            this.ctx.fill();
+            // 生成固定的土壤顆粒
+            for (let i = 0; i < 100; i++) {
+                this.soilParticles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: groundY + Math.random() * groundHeight,
+                    size: Math.random() * 2 + 0.5,
+                    alpha: Math.random() * 0.5 + 0.3
+                });
+            }
+            
+            // 生成固定的土壤裂縫
+            for (let i = 0; i < 5; i++) {
+                this.soilCracks.push({
+                    startX: Math.random() * this.canvas.width,
+                    endX: Math.random() * this.canvas.width,
+                    y: groundY + Math.random() * groundHeight,
+                    alpha: Math.random() * 0.4 + 0.2
+                });
+            }
+            
+            // 生成固定的小石頭
+            for (let i = 0; i < 8; i++) {
+                this.soilStones.push({
+                    x: Math.random() * this.canvas.width,
+                    y: groundY + Math.random() * 10,
+                    size: Math.random() * 3 + 1,
+                    alpha: Math.random() * 0.6 + 0.4
+                });
+            }
         }
         
-        // 添加土壤裂縫
-        for (let i = 0; i < 5; i++) {
-            const startX = Math.random() * this.canvas.width;
-            const endX = startX + Math.random() * 50 + 20;
-            const y = groundY + Math.random() * groundHeight;
-            
-            this.ctx.strokeStyle = `rgba(101, 67, 33, ${Math.random() * 0.4 + 0.2})`;
+        // 繪製固定的土壤顆粒
+        this.soilParticles.forEach(particle => {
+            this.ctx.fillStyle = `rgba(139, 69, 19, ${particle.alpha})`;
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        
+        // 繪製固定的土壤裂縫
+        this.soilCracks.forEach(crack => {
+            this.ctx.strokeStyle = `rgba(101, 67, 33, ${crack.alpha})`;
             this.ctx.lineWidth = 1;
             this.ctx.beginPath();
-            this.ctx.moveTo(startX, y);
-            this.ctx.lineTo(endX, y);
+            this.ctx.moveTo(crack.startX, crack.y);
+            this.ctx.lineTo(crack.endX, crack.y);
             this.ctx.stroke();
-        }
+        });
     }
     
     // 繪製土壤細節
     drawSoilDetails(groundY) {
-        // 添加小石頭
-        for (let i = 0; i < 8; i++) {
-            const x = Math.random() * this.canvas.width;
-            const y = groundY + Math.random() * 10;
-            const size = Math.random() * 3 + 1;
-            
-            this.ctx.fillStyle = `rgba(169, 169, 169, ${Math.random() * 0.6 + 0.4})`;
+        // 繪製固定的小石頭
+        this.soilStones.forEach(stone => {
+            this.ctx.fillStyle = `rgba(169, 169, 169, ${stone.alpha})`;
             this.ctx.beginPath();
-            this.ctx.arc(x, y, size, 0, Math.PI * 2);
+            this.ctx.arc(stone.x, stone.y, stone.size, 0, Math.PI * 2);
             this.ctx.fill();
             
             // 石頭陰影
             this.ctx.fillStyle = `rgba(0, 0, 0, 0.3)`;
             this.ctx.beginPath();
-            this.ctx.arc(x + 1, y + 1, size, 0, Math.PI * 2);
+            this.ctx.arc(stone.x + 1, stone.y + 1, stone.size, 0, Math.PI * 2);
             this.ctx.fill();
-        }
+        });
         
         // 添加土壤陰影
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
