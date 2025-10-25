@@ -243,6 +243,9 @@ class MushroomManager {
         const mushroom = new Mushroom(spawnX, groundY - height, width, height, this.speed);
         this.mushrooms.push(mushroom);
         this.lastSpawnX = spawnX;
+        
+        // 調試信息
+        console.log(`生成蘑菇: X=${spawnX}, Y=${groundY - height}, 速度=${this.speed}`);
     }
 
     // 繪製所有蘑菇
