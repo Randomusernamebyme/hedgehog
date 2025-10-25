@@ -171,10 +171,11 @@ class MushroomManager {
     constructor() {
         this.mushrooms = [];
         this.spawnTimer = 0;
-        this.spawnInterval = 3000; // 3秒生成一個
-        this.minSpawnInterval = 2000; // 最小間隔2秒
+        this.spawnInterval = 2000; // 2秒生成一個
+        this.minSpawnInterval = 1000; // 最小間隔1秒
         this.speed = 3;
         this.maxSpeed = 8;
+        this.lastSpawnX = 600; // 記錄最後生成蘑菇的X位置
     }
 
     // 更新所有蘑菇
@@ -221,8 +222,11 @@ class MushroomManager {
                 break;
         }
 
-        const mushroom = new Mushroom(600, groundY - height, width, height, this.speed);
+        // 從螢幕右邊生成蘑菇，確保不會重疊
+        const spawnX = Math.max(600, this.lastSpawnX + 150);
+        const mushroom = new Mushroom(spawnX, groundY - height, width, height, this.speed);
         this.mushrooms.push(mushroom);
+        this.lastSpawnX = spawnX;
     }
 
     // 繪製所有蘑菇
@@ -252,7 +256,8 @@ class MushroomManager {
         this.mushrooms = [];
         this.spawnTimer = 0;
         this.speed = 3;
-        this.spawnInterval = 3000;
+        this.spawnInterval = 2000;
+        this.lastSpawnX = 600;
     }
 
     // 獲取所有蘑菇
