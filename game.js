@@ -413,14 +413,79 @@ class Game {
     // 繪製地面
     drawGround() {
         const groundY = this.canvas.height - 50;
+        const groundHeight = 50;
         
-        // 黑夜主題的地面線條
-        this.ctx.strokeStyle = '#ffffff';
+        // 繪製土壤背景
+        this.ctx.fillStyle = '#2d1b0e'; // 深棕色土壤
+        this.ctx.fillRect(0, groundY, this.canvas.width, groundHeight);
+        
+        // 繪製土壤顆粒質感
+        this.drawSoilTexture(groundY, groundHeight);
+        
+        // 繪製地面頂部線條
+        this.ctx.strokeStyle = '#8B4513'; // 棕色線條
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(0, groundY);
         this.ctx.lineTo(this.canvas.width, groundY);
         this.ctx.stroke();
+        
+        // 添加土壤細節
+        this.drawSoilDetails(groundY);
+    }
+    
+    // 繪製土壤質感
+    drawSoilTexture(groundY, groundHeight) {
+        // 添加隨機土壤顆粒
+        for (let i = 0; i < 100; i++) {
+            const x = Math.random() * this.canvas.width;
+            const y = groundY + Math.random() * groundHeight;
+            const size = Math.random() * 2 + 0.5;
+            
+            this.ctx.fillStyle = `rgba(139, 69, 19, ${Math.random() * 0.5 + 0.3})`;
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, size, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+        
+        // 添加土壤裂縫
+        for (let i = 0; i < 5; i++) {
+            const startX = Math.random() * this.canvas.width;
+            const endX = startX + Math.random() * 50 + 20;
+            const y = groundY + Math.random() * groundHeight;
+            
+            this.ctx.strokeStyle = `rgba(101, 67, 33, ${Math.random() * 0.4 + 0.2})`;
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.moveTo(startX, y);
+            this.ctx.lineTo(endX, y);
+            this.ctx.stroke();
+        }
+    }
+    
+    // 繪製土壤細節
+    drawSoilDetails(groundY) {
+        // 添加小石頭
+        for (let i = 0; i < 8; i++) {
+            const x = Math.random() * this.canvas.width;
+            const y = groundY + Math.random() * 10;
+            const size = Math.random() * 3 + 1;
+            
+            this.ctx.fillStyle = `rgba(169, 169, 169, ${Math.random() * 0.6 + 0.4})`;
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, size, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // 石頭陰影
+            this.ctx.fillStyle = `rgba(0, 0, 0, 0.3)`;
+            this.ctx.beginPath();
+            this.ctx.arc(x + 1, y + 1, size, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+        
+        // 添加土壤陰影
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillRect(0, groundY + 20, this.canvas.width, 30);
     }
 
     // 繪製雲朵（黑夜主題下移除）
