@@ -97,7 +97,9 @@ class Game {
     // 預載入所有圖片
     preloadImages() {
         const images = [
-            'assets/images/character.png',
+            'assets/images/hedgehog_walk_1.png',
+            'assets/images/hedgehog_walk_2.png',
+            'assets/images/hedgehog_walk_3.png',
             'assets/images/mushroom1.png',
             'assets/images/mushroom2.png',
             'assets/images/mushroom3.png',
