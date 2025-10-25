@@ -320,13 +320,13 @@ class Game {
         
         // 蘑菇的更新和移除已經在 mushroomManager.update() 中處理
         
-        // 根據時間增加難度 - 每 50 分增加一次
-        if (this.score > 0 && this.score % 50 === 0) {
+        // 根據時間增加難度 - 每 100 分增加一次（更平緩）
+        if (this.score > 0 && this.score % 100 === 0) {
             this.mushroomManager.increaseDifficulty();
         }
         
-        // 遊戲加速 - 每 200 分增加一次速度
-        if (this.score > 0 && this.score % 200 === 0) {
+        // 遊戲加速 - 每 300 分增加一次速度（更平緩）
+        if (this.score > 0 && this.score % 300 === 0) {
             this.mushroomManager.increaseSpeed();
         }
     }

@@ -191,12 +191,21 @@ class MushroomManager {
         this.minSpawnInterval = 1000; // 最小間隔1秒
         this.baseSpeed = 3; // 基礎速度
         this.currentSpeed = 3; // 當前速度
+        this.targetSpeed = 3; // 目標速度
         this.maxSpeed = 8;
         this.lastSpawnX = 600; // 記錄最後生成蘑菇的X位置
+        this.speedTransitionRate = 0.01; // 速度過渡速率
     }
 
     // 更新所有蘑菇
     update(deltaTime) {
+        // 平滑速度過渡
+        if (Math.abs(this.currentSpeed - this.targetSpeed) > 0.01) {
+            this.currentSpeed += (this.targetSpeed - this.currentSpeed) * this.speedTransitionRate;
+        } else {
+            this.currentSpeed = this.targetSpeed;
+        }
+        
         // 確保所有蘑菇速度同步
         for (let mushroom of this.mushrooms) {
             mushroom.speed = this.currentSpeed;
@@ -265,24 +274,15 @@ class MushroomManager {
 
     // 增加難度
     increaseDifficulty() {
-        this.currentSpeed = Math.min(this.currentSpeed + 0.5, this.maxSpeed);
-        this.spawnInterval = Math.max(this.spawnInterval * 0.95, this.minSpawnInterval);
-        
-        // 同步更新所有現有蘑菇的速度
-        for (let mushroom of this.mushrooms) {
-            mushroom.speed = this.currentSpeed;
-        }
+        // 更平緩的速度增加，使用目標速度
+        this.targetSpeed = Math.min(this.targetSpeed + 0.1, this.maxSpeed);
+        this.spawnInterval = Math.max(this.spawnInterval * 0.98, this.minSpawnInterval);
     }
     
     // 增加遊戲速度
     increaseSpeed() {
-        // 增加所有蘑菇的移動速度
-        this.currentSpeed = Math.min(this.currentSpeed + 1, this.maxSpeed);
-        
-        // 更新現有蘑菇的速度
-        for (let mushroom of this.mushrooms) {
-            mushroom.speed = this.currentSpeed;
-        }
+        // 更平緩的速度增加，使用目標速度
+        this.targetSpeed = Math.min(this.targetSpeed + 0.2, this.maxSpeed);
     }
 
     // 重置
@@ -290,6 +290,7 @@ class MushroomManager {
         this.mushrooms = [];
         this.spawnTimer = 0;
         this.currentSpeed = 3;
+        this.targetSpeed = 3;
         this.spawnInterval = 2000;
         this.lastSpawnX = 600;
     }
