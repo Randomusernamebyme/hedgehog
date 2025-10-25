@@ -181,7 +181,7 @@ class MushroomManager {
     update(deltaTime) {
         // 更新現有蘑菇
         for (let i = this.mushrooms.length - 1; i >= 0; i--) {
-            this.mushrooms[i].update();
+            this.mushrooms[i].update(deltaTime);
             
             // 移除離開螢幕的蘑菇
             if (this.mushrooms[i].isOffScreen()) {
@@ -234,6 +234,17 @@ class MushroomManager {
     increaseDifficulty() {
         this.speed = Math.min(this.speed + 0.5, this.maxSpeed);
         this.spawnInterval = Math.max(this.spawnInterval * 0.95, this.minSpawnInterval);
+    }
+    
+    // 增加遊戲速度
+    increaseSpeed() {
+        // 增加所有蘑菇的移動速度
+        this.speed = Math.min(this.speed + 1, this.maxSpeed);
+        
+        // 更新現有蘑菇的速度
+        for (let mushroom of this.mushrooms) {
+            mushroom.speed = this.speed;
+        }
     }
 
     // 重置

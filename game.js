@@ -323,9 +323,14 @@ class Game {
             }
         }
         
-        // 根據時間增加難度
-        if (this.score > 0 && this.score % 100 === 0) {
+        // 根據時間增加難度 - 每 50 分增加一次
+        if (this.score > 0 && this.score % 50 === 0) {
             this.mushroomManager.increaseDifficulty();
+        }
+        
+        // 遊戲加速 - 每 200 分增加一次速度
+        if (this.score > 0 && this.score % 200 === 0) {
+            this.mushroomManager.increaseSpeed();
         }
     }
 
