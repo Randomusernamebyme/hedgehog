@@ -189,13 +189,19 @@ class MushroomManager {
         this.spawnTimer = 0;
         this.spawnInterval = 2000; // 2秒生成一個
         this.minSpawnInterval = 1000; // 最小間隔1秒
-        this.speed = 3;
+        this.baseSpeed = 3; // 基礎速度
+        this.currentSpeed = 3; // 當前速度
         this.maxSpeed = 8;
         this.lastSpawnX = 600; // 記錄最後生成蘑菇的X位置
     }
 
     // 更新所有蘑菇
     update(deltaTime) {
+        // 確保所有蘑菇速度同步
+        for (let mushroom of this.mushrooms) {
+            mushroom.speed = this.currentSpeed;
+        }
+        
         // 更新現有蘑菇
         for (let i = this.mushrooms.length - 1; i >= 0; i--) {
             this.mushrooms[i].update(deltaTime);
@@ -240,12 +246,12 @@ class MushroomManager {
 
         // 從螢幕右邊生成蘑菇，確保不會重疊
         const spawnX = Math.max(600, this.lastSpawnX + 150);
-        const mushroom = new Mushroom(spawnX, groundY - height, width, height, this.speed);
+        const mushroom = new Mushroom(spawnX, groundY - height, width, height, this.currentSpeed);
         this.mushrooms.push(mushroom);
         this.lastSpawnX = spawnX;
         
         // 調試信息
-        console.log(`生成蘑菇: X=${spawnX}, Y=${groundY - height}, 速度=${this.speed}`);
+        console.log(`生成蘑菇: X=${spawnX}, Y=${groundY - height}, 速度=${this.currentSpeed}`);
     }
 
     // 繪製所有蘑菇
@@ -259,18 +265,23 @@ class MushroomManager {
 
     // 增加難度
     increaseDifficulty() {
-        this.speed = Math.min(this.speed + 0.5, this.maxSpeed);
+        this.currentSpeed = Math.min(this.currentSpeed + 0.5, this.maxSpeed);
         this.spawnInterval = Math.max(this.spawnInterval * 0.95, this.minSpawnInterval);
+        
+        // 同步更新所有現有蘑菇的速度
+        for (let mushroom of this.mushrooms) {
+            mushroom.speed = this.currentSpeed;
+        }
     }
     
     // 增加遊戲速度
     increaseSpeed() {
         // 增加所有蘑菇的移動速度
-        this.speed = Math.min(this.speed + 1, this.maxSpeed);
+        this.currentSpeed = Math.min(this.currentSpeed + 1, this.maxSpeed);
         
         // 更新現有蘑菇的速度
         for (let mushroom of this.mushrooms) {
-            mushroom.speed = this.speed;
+            mushroom.speed = this.currentSpeed;
         }
     }
 
@@ -278,7 +289,7 @@ class MushroomManager {
     reset() {
         this.mushrooms = [];
         this.spawnTimer = 0;
-        this.speed = 3;
+        this.currentSpeed = 3;
         this.spawnInterval = 2000;
         this.lastSpawnX = 600;
     }
